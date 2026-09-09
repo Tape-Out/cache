@@ -19,6 +19,7 @@ k = cfg.get("knobs", {})
 lines = int(k.get("lines", 8))
 wpl = int(k.get("wpl", 4))
 stats = bool(k.get("stats", True))
+cbit = int(k.get("cachedBit", 31))
 
 LAT = 4
 STEPS = 32
@@ -27,7 +28,9 @@ SPAN = 16          # 走 16 个字，两遍
 lw = int(math.log2(wpl)) if wpl > 1 else 0
 tags = {}
 hits = misses = 0
-for s in range(STEPS):
+# 地址那一位没置上就全直通：不查表、不装填，命中与缺失都不动
+cacheable = bool((0x8000_0000 >> cbit) & 1)
+for s in range(STEPS if cacheable else 0):
     w = s % SPAN
     ln = (w >> lw) % lines
     tg = w >> lw
@@ -51,7 +54,7 @@ import Cache::*;
 
 (* synthesize *)
 module mkCache{label}Tb(Empty);
-  CacheIfc#(8, 32, {lines}, {wpl}) c <- mkCache(CacheCfg {{ stats: {str(stats).title()} }});
+  CacheIfc#(8, 32, {cbit}, {lines}, {wpl}) c <- mkCache(CacheCfg {{ stats: {str(stats).title()} }});
 
   Reg#(Bit#(8))  wait_ <- mkConfigReg(0);
   Reg#(Bit#(32)) cyc   <- mkConfigReg(0);

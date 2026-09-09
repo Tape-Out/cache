@@ -22,6 +22,13 @@ contract:
     aw: 8
     dw: 32
 params:
+  cachedBit:
+    type: int
+    default: 31
+    range:
+    - 0
+    - 31
+    desc: 地址的第几位为 1 才可缓存。外设不是内存，缓存了语义就错
   lines:
     type: int
     default: 8
@@ -42,7 +49,7 @@ features:
     default: true
     desc: 命中与缺失计数。量命中率要，流片可以关
     area:
-      fixed: 959.0
+      fixed: 1099.84
 emit:
 - kind: bsv
   package: Cache
@@ -65,72 +72,83 @@ deps:
 area:
   base:
     points:
-      '1': 3707.2
-      '4': 9287.32
-      '8': 16745.12
-      '32': 59791.76
+      '1': 4013.8
+      '4': 11890.48
+      '8': 17312.68
+      '32': 60538.8
     per: lines
   params:
     wpl:
       points:
-        '1': -8571.08
-        '2': -5758.48
+        '1': -8840.44
+        '2': -5945.52
         '4': 0.0
-        '8': 11857.72
-  margin: 0.3346
+        '8': 11733.12
+  margin: 0.1798
   model: points-additive
   error:
-    bound: 0.3146
+    bound: 0.1598
     sign: over
-    note: 'the data array holds lines times words per line, so the two parameters
-      multiply while the model only adds; a delta curve measured at eight lines over-subtracts
+    note: the data array holds lines times words per line, so the two parameters multiply
+      while the price list only adds; a delta measured at eight lines over-subtracts
       at six. The margin is therefore large and that is the shape of the model showing,
-      not noise: the worst under estimate found is six lines of two words with statistics
-      off, which came in 31.5 percent under before the lift'
-  measured:
-  - at:
-      lines: 1
-      wpl: 4
-      stats: false
-    um2: 3707.2
-  - at:
-      lines: 4
-      wpl: 4
-      stats: false
-    um2: 9287.32
-  - at:
-      lines: 8
-      wpl: 4
-      stats: false
-    um2: 16745.12
-  - at:
-      lines: 32
-      wpl: 4
-      stats: false
-    um2: 59791.76
-  - at:
-      lines: 8
-      wpl: 1
-      stats: true
-    um2: 9133.04
-  - at:
-      lines: 8
-      wpl: 2
-      stats: true
-    um2: 11945.64
-  - at:
-      lines: 8
-      wpl: 4
-      stats: true
-    um2: 17704.12
-  - at:
-      lines: 8
-      wpl: 8
-      stats: true
-    um2: 29561.84
+      not noise. The worst under estimate found is six lines of two words with statistics
+      off, 16.0% under before the lift
   corner:
     tool: ecc
     pdk: ics55
     freq_mhz: 100
     measured: '2026-09-09'
-    gen_digest: sha256:1b330d2e19f10e66
+    gen_digest: sha256:2ed3be61d76bb150
+  measured:
+  - at:
+      cachedBit: 31
+      lines: 1
+      wpl: 4
+      stats: false
+    um2: 4013.8
+  - at:
+      cachedBit: 31
+      lines: 4
+      wpl: 4
+      stats: false
+    um2: 11890.48
+  - at:
+      cachedBit: 31
+      lines: 8
+      wpl: 4
+      stats: false
+    um2: 17312.68
+  - at:
+      cachedBit: 31
+      lines: 32
+      wpl: 4
+      stats: false
+    um2: 60538.8
+  - at:
+      cachedBit: 31
+      lines: 8
+      wpl: 1
+      stats: true
+    um2: 9572.08
+  - at:
+      cachedBit: 31
+      lines: 8
+      wpl: 2
+      stats: true
+    um2: 12467.0
+  - at:
+      cachedBit: 31
+      lines: 8
+      wpl: 4
+      stats: true
+    um2: 18412.52
+  - at:
+      cachedBit: 31
+      lines: 8
+      wpl: 8
+      stats: true
+    um2: 30145.64
+test:
+  noarea:
+  - cachedBit
