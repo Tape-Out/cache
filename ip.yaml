@@ -1,0 +1,136 @@
+name: cache
+version: 0.1.0
+spec: '0.1'
+kind: ip
+lang:
+- bsv
+identity:
+  slug: cache-tapeout-bsv
+  display_name: Direct mapped write through cache
+  summary: 'A first level cache between a core and the fabric: direct mapped, write
+    through, allocate on read.'
+  category: memory
+  subcategories:
+  - cache
+  ip_family: cache
+  integration_profile: []
+  maturity: planned
+contract:
+  version: 1
+  ctrl:
+    shape: flat
+    aw: 8
+    dw: 32
+params:
+  lines:
+    type: int
+    default: 8
+    range:
+    - 1
+    - 256
+    desc: 行数。直接映射，一行一个标签
+  wpl:
+    type: int
+    default: 4
+    range:
+    - 1
+    - 16
+    desc: 每行几个字。缺失时整行拉回来，所以它也是填充的拍数
+features:
+  stats:
+    type: bool
+    default: true
+    desc: 命中与缺失计数。量命中率要，流片可以关
+    area:
+      fixed: 959.0
+emit:
+- kind: bsv
+  package: Cache
+  module: mkCache
+  config_type: CacheCfg
+  interface: CacheIfc
+  pins:
+  - name: up
+    type: RegTarget
+    targs:
+    - 32
+    - 32
+  - name: down
+    type: RegManager
+    targs:
+    - 32
+    - 32
+deps:
+  hwcore: ^0.1
+area:
+  base:
+    points:
+      '1': 3707.2
+      '4': 9287.32
+      '8': 16745.12
+      '32': 59791.76
+    per: lines
+  params:
+    wpl:
+      points:
+        '1': -8571.08
+        '2': -5758.48
+        '4': 0.0
+        '8': 11857.72
+  margin: 0.3346
+  model: points-additive
+  error:
+    bound: 0.3146
+    sign: over
+    note: 'the data array holds lines times words per line, so the two parameters
+      multiply while the model only adds; a delta curve measured at eight lines over-subtracts
+      at six. The margin is therefore large and that is the shape of the model showing,
+      not noise: the worst under estimate found is six lines of two words with statistics
+      off, which came in 31.5 percent under before the lift'
+  measured:
+  - at:
+      lines: 1
+      wpl: 4
+      stats: false
+    um2: 3707.2
+  - at:
+      lines: 4
+      wpl: 4
+      stats: false
+    um2: 9287.32
+  - at:
+      lines: 8
+      wpl: 4
+      stats: false
+    um2: 16745.12
+  - at:
+      lines: 32
+      wpl: 4
+      stats: false
+    um2: 59791.76
+  - at:
+      lines: 8
+      wpl: 1
+      stats: true
+    um2: 9133.04
+  - at:
+      lines: 8
+      wpl: 2
+      stats: true
+    um2: 11945.64
+  - at:
+      lines: 8
+      wpl: 4
+      stats: true
+    um2: 17704.12
+  - at:
+      lines: 8
+      wpl: 8
+      stats: true
+    um2: 29561.84
+  corner:
+    tool: ecc
+    pdk: ics55
+    freq_mhz: 100
+    measured: '2026-09-09'
+    gen_digest: sha256:1b330d2e19f10e66

@@ -1,0 +1,27 @@
+ip: cache
+contract: { aw: 8, dw: 32 }
+base: 0x0
+size: 0x100
+params: []
+
+# 统计只在 stats 开着时才有存储。量命中率的时候要，流片可以关掉——
+# 两个 32 位计数器不算大，但「用不上的东西不例化」是这套的规矩。
+regs:
+  - name: hits
+    offset: 0x00
+    desc: read hits since reset
+    feature: stats
+    fields: [ { name: val, width: 32, sw: r, hw: rw, reset: 0 } ]
+
+  - name: misses
+    offset: 0x04
+    desc: read misses since reset
+    feature: stats
+    fields: [ { name: val, width: 32, sw: r, hw: rw, reset: 0 } ]
+
+  - name: geom
+    offset: 0x08
+    desc: lines and words per line, tied off at assembly time
+    fields:
+      - { name: lines, bits: "15:0",  sw: r, hw: w, volatile: true }
+      - { name: wpl,   bits: "31:16", sw: r, hw: w, volatile: true }
