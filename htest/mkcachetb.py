@@ -49,7 +49,7 @@ import RegFile::*;
 import RegIf::*;
 import Cache::*;
 
-// 由 tb/mkcachetb.py 生成，勿手改。
+// 由 htest/mkcachetb.py 生成，勿手改。
 // 这一点：lines={lines} wpl={wpl} stats={stats}，存储延迟 {LAT} 拍
 
 (* synthesize *)
